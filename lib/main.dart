@@ -49,7 +49,6 @@ class TempatinApp extends StatelessWidget {
         // '/booking': (context) => const BookingPage(),
         // '/checkout': (context) => const CheckoutPage(),
         // '/mybooking': (context) => const MyBookingPage(),
-        // '/favorite': (context) => const FavoritePage(),
         // '/profile': (context) => const ProfilePage(),
         // '/help': (context) => const HelpPage(),
       },
