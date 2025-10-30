@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/onboarding_page.dart';
+import 'pages/login_page.dart';
+import 'pages/register_page.dart';
 
 void main() {
   runApp(const TempatinApp());
@@ -27,7 +29,11 @@ class TempatinApp extends StatelessWidget {
       initialRoute: '/onboarding',
 
       // Daftar semua rute di aplikasi
-      routes: {'/onboarding': (context) => const OnboardingPage()},
+      routes: {
+        '/onboarding': (context) => const OnboardingPage(),
+        '/login': (context) => const LoginPage(),
+        '/register': (context) => const RegisterPage(),
+      },
     );
   }
 }
