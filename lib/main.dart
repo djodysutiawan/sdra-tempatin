@@ -14,7 +14,7 @@ class TempatinApp extends StatelessWidget {
       title: 'Tempatin',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: const Color(0xFFFF7A00), // Orange utama
+        primaryColor: const Color(0xFFFF7A00),
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFFFF7A00),
           primary: const Color(0xFFFF7A00),
@@ -23,7 +23,6 @@ class TempatinApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Poppins',
       ),
-
       // Halaman pertama kali muncul
       initialRoute: '/onboarding',
 
