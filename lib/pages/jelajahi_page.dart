@@ -14,7 +14,7 @@ class TempatinApp extends StatelessWidget {
 }
 
 class JelajahiPage extends StatefulWidget {
-  const JelajahiPage({super.key});
+  const JelajahiPage({super.key}); 
 
   @override
   State<JelajahiPage> createState() => _JelajahiPageState();
@@ -22,11 +22,7 @@ class JelajahiPage extends StatefulWidget {
 
 class _JelajahiPageState extends State<JelajahiPage> {
   String selectedFilter = "All";
-<<<<<<< HEAD
   String searchText = "";
-=======
-  String searchText = ""; // <-- Variabel untuk Teks Pencarian
->>>>>>> am-jelajahi
   bool showFilterChips = true;
 
   // ... (data allPlaces tetap sama)
@@ -133,10 +129,6 @@ class _JelajahiPageState extends State<JelajahiPage> {
   ];
 
   List<Map<String, dynamic>> get filteredPlaces {
-<<<<<<< HEAD
-=======
-    // 1. Terapkan Filter Chips (Harga, Lokasi, Discount)
->>>>>>> am-jelajahi
     List<Map<String, dynamic>> places;
 
     switch (selectedFilter) {
@@ -157,17 +149,9 @@ class _JelajahiPageState extends State<JelajahiPage> {
         break;
     }
 
-<<<<<<< HEAD
     if (searchText.isNotEmpty) {
       final query = searchText.toLowerCase();
       places = places.where((place) {
-=======
-    // 2. Terapkan Pencarian Teks
-    if (searchText.isNotEmpty) {
-      final query = searchText.toLowerCase();
-      places = places.where((place) {
-        // Mencari di nama atau lokasi (case-insensitive)
->>>>>>> am-jelajahi
         final name = place['name'].toLowerCase();
         final location = place['location'].toLowerCase();
         return name.contains(query) || location.contains(query);
@@ -223,10 +207,6 @@ class _JelajahiPageState extends State<JelajahiPage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
-<<<<<<< HEAD
-=======
-                      // Mengaktifkan fungsi pencarian
->>>>>>> am-jelajahi
                       onChanged: (value) {
                         setState(() {
                           searchText = value;
@@ -238,25 +218,13 @@ class _JelajahiPageState extends State<JelajahiPage> {
                       ),
                     ),
                   ),
-<<<<<<< HEAD
                   IconButton(
                     icon: Icon(
                       Icons.tune,
-=======
-                  // Mengaktifkan tombol filter (Icons.tune)
-                  IconButton(
-                    icon: Icon(
-                      Icons.tune,
-                      // Mengubah warna ikon berdasarkan status visibilitas filter chips
->>>>>>> am-jelajahi
                       color: showFilterChips ? Colors.teal : Colors.grey,
                     ),
                     onPressed: () {
                       setState(() {
-<<<<<<< HEAD
-=======
-                        // Toggle visibilitas filter chips
->>>>>>> am-jelajahi
                         showFilterChips = !showFilterChips;
                       });
                     },
@@ -266,15 +234,9 @@ class _JelajahiPageState extends State<JelajahiPage> {
             ),
             const SizedBox(height: 12),
 
-<<<<<<< HEAD
             // Filter buttons
             Visibility(
               visible: showFilterChips,
-=======
-            // Filter buttons (dibungkus Visibility)
-            Visibility(
-              visible: showFilterChips, // Dikontrol oleh tombol tune
->>>>>>> am-jelajahi
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -286,15 +248,7 @@ class _JelajahiPageState extends State<JelajahiPage> {
                           label: label,
                           isSelected: selectedFilter == label,
                           onTap: () {
-<<<<<<< HEAD
                             setState(() => selectedFilter = label);
-=======
-                            setState(() {
-                              selectedFilter = label;
-                              // Reset pencarian setelah mengganti filter (opsional)
-                              // searchText = "";
-                            });
->>>>>>> am-jelajahi
                           },
                         ),
                       ),
@@ -302,11 +256,6 @@ class _JelajahiPageState extends State<JelajahiPage> {
                 ),
               ),
             ),
-<<<<<<< HEAD
-=======
-
-            // SizedBox hanya ditampilkan jika filter chips terlihat
->>>>>>> am-jelajahi
             Visibility(
               visible: showFilterChips,
               child: const SizedBox(height: 16),
