@@ -22,6 +22,8 @@ class JelajahiPage extends StatefulWidget {
 
 class _JelajahiPageState extends State<JelajahiPage> {
   String selectedFilter = "All";
+  String searchText = ""; // <-- Variabel untuk Teks Pencarian
+  bool showFilterChips = true;
 
   final List<Map<String, dynamic>> allPlaces = [
     {
@@ -126,19 +128,39 @@ class _JelajahiPageState extends State<JelajahiPage> {
   ];
 
   List<Map<String, dynamic>> get filteredPlaces {
+    // 1. Terapkan Filter Chips (Harga, Lokasi, Discount)
+    List<Map<String, dynamic>> places;
+
     switch (selectedFilter) {
       case "Harga":
-        return List.from(allPlaces)
+        places = List.from(allPlaces)
           ..sort((a, b) => a['price'].compareTo(b['price']));
+        break;
       case "Lokasi":
-        return allPlaces
+        places = allPlaces
             .where((place) => place['location'] == 'Tasikmalaya')
             .toList();
+        break;
       case "Discount":
-        return allPlaces.where((place) => place['discount'] == true).toList();
+        places = allPlaces.where((place) => place['discount'] == true).toList();
+        break;
       default:
-        return allPlaces;
+        places = allPlaces;
+        break;
     }
+
+    // 2. Terapkan Pencarian Teks
+    if (searchText.isNotEmpty) {
+      final query = searchText.toLowerCase();
+      places = places.where((place) {
+        // Mencari di nama atau lokasi (case-insensitive)
+        final name = place['name'].toLowerCase();
+        final location = place['location'].toLowerCase();
+        return name.contains(query) || location.contains(query);
+      }).toList();
+    }
+
+    return places;
   }
 
   @override
@@ -178,44 +200,75 @@ class _JelajahiPageState extends State<JelajahiPage> {
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Row(
+              child: Row(
                 children: [
-                  Icon(Icons.search, color: Colors.grey),
-                  SizedBox(width: 8),
+                  const Icon(Icons.search, color: Colors.grey),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
-                      decoration: InputDecoration(
+                      // Mengaktifkan fungsi pencarian
+                      onChanged: (value) {
+                        setState(() {
+                          searchText = value;
+                        });
+                      },
+                      decoration: const InputDecoration(
                         hintText: 'Search...',
                         border: InputBorder.none,
                       ),
                     ),
                   ),
-                  Icon(Icons.tune, color: Colors.grey),
+                  // Mengaktifkan tombol filter (Icons.tune)
+                  IconButton(
+                    icon: Icon(
+                      Icons.tune,
+                      // Mengubah warna ikon berdasarkan status visibilitas filter chips
+                      color: showFilterChips ? Colors.teal : Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        // Toggle visibilitas filter chips
+                        showFilterChips = !showFilterChips;
+                      });
+                    },
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 12),
 
-            // Filter buttons
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (final label in ["All", "Harga", "Lokasi", "Discount"])
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: FilterChipWidget(
-                        label: label,
-                        isSelected: selectedFilter == label,
-                        onTap: () {
-                          setState(() => selectedFilter = label);
-                        },
+            // Filter buttons (dibungkus Visibility)
+            Visibility(
+              visible: showFilterChips, // Dikontrol oleh tombol tune
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    for (final label in ["All", "Harga", "Lokasi", "Discount"])
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: FilterChipWidget(
+                          label: label,
+                          isSelected: selectedFilter == label,
+                          onTap: () {
+                            setState(() {
+                              selectedFilter = label;
+                              // Reset pencarian setelah mengganti filter (opsional)
+                              // searchText = "";
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 16),
+
+            // SizedBox hanya ditampilkan jika filter chips terlihat
+            Visibility(
+              visible: showFilterChips,
+              child: const SizedBox(height: 16),
+            ),
 
             // List of places
             Expanded(
