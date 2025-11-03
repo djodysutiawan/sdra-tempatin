@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'jelajahi_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,12 +11,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
-    Center(child: Text("🏠 Beranda")),
-    Center(child: Text("🔍 Jelajahi")),
-    Center(child: Text("📅 My Booking")),
-    Center(child: Text("❤ Favorit")),
-    Center(child: Text("👤 Profil")),
+  final List<Widget> _pages = [
+    const Center(child: Text("🏠 Beranda")),
+    JelajahiPage(), //Panggil halaman dari file jelajahi_page.dart
+    const Center(child: Text("📅 My Booking")),
+    const Center(child: Text("❤ Favorit")),
+    const Center(child: Text("👤 Profil")),
   ];
 
   @override
