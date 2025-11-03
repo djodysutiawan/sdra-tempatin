@@ -21,9 +21,9 @@ class JelajahiPage extends StatefulWidget {
 }
 
 class _JelajahiPageState extends State<JelajahiPage> {
-  // 1. Menambahkan variabel untuk menampung teks pencarian
   String selectedFilter = "All";
-  String searchText = ""; // Variabel baru untuk teks pencarian
+  String searchText = ""; // <-- Variabel untuk Teks Pencarian
+  bool showFilterChips = true;
 
   final List<Map<String, dynamic>> allPlaces = [
     {
@@ -127,9 +127,8 @@ class _JelajahiPageState extends State<JelajahiPage> {
     },
   ];
 
-  // 3. Gabungkan filter dan pencarian
   List<Map<String, dynamic>> get filteredPlaces {
-    // Terapkan filter berdasarkan selectedFilter
+    // 1. Terapkan Filter Chips (Harga, Lokasi, Discount)
     List<Map<String, dynamic>> places;
 
     switch (selectedFilter) {
@@ -150,11 +149,11 @@ class _JelajahiPageState extends State<JelajahiPage> {
         break;
     }
 
-    // Terapkan filter pencarian jika searchText tidak kosong
+    // 2. Terapkan Pencarian Teks
     if (searchText.isNotEmpty) {
       final query = searchText.toLowerCase();
       places = places.where((place) {
-        // Cari di 'name' atau 'location'
+        // Mencari di nama atau lokasi (case-insensitive)
         final name = place['name'].toLowerCase();
         final location = place['location'].toLowerCase();
         return name.contains(query) || location.contains(query);
@@ -179,14 +178,18 @@ class _JelajahiPageState extends State<JelajahiPage> {
             fontSize: 18,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black),
-          onPressed: () {},
-        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none, color: Colors.black),
-            onPressed: () {},
+            onPressed: () {
+              // Menampilkan SnackBar sebagai tanda tombol aktif
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Tombol Notifikasi Ditekan!'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -207,7 +210,7 @@ class _JelajahiPageState extends State<JelajahiPage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
-                      // 2. Hubungkan TextField ke variabel searchText
+                      // Mengaktifkan fungsi pencarian
                       onChanged: (value) {
                         setState(() {
                           searchText = value;
@@ -219,32 +222,57 @@ class _JelajahiPageState extends State<JelajahiPage> {
                       ),
                     ),
                   ),
-                  const Icon(Icons.tune, color: Colors.grey),
+                  // Mengaktifkan tombol filter (Icons.tune)
+                  IconButton(
+                    icon: Icon(
+                      Icons.tune,
+                      // Mengubah warna ikon berdasarkan status visibilitas filter chips
+                      color: showFilterChips ? Colors.teal : Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        // Toggle visibilitas filter chips
+                        showFilterChips = !showFilterChips;
+                      });
+                    },
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 12),
 
-            // Filter buttons
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (final label in ["All", "Harga", "Lokasi", "Discount"])
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: FilterChipWidget(
-                        label: label,
-                        isSelected: selectedFilter == label,
-                        onTap: () {
-                          setState(() => selectedFilter = label);
-                        },
+            // Filter buttons (dibungkus Visibility)
+            Visibility(
+              visible: showFilterChips, // Dikontrol oleh tombol tune
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    for (final label in ["All", "Harga", "Lokasi", "Discount"])
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: FilterChipWidget(
+                          label: label,
+                          isSelected: selectedFilter == label,
+                          onTap: () {
+                            setState(() {
+                              selectedFilter = label;
+                              // Reset pencarian setelah mengganti filter (opsional)
+                              // searchText = "";
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 16),
+
+            // SizedBox hanya ditampilkan jika filter chips terlihat
+            Visibility(
+              visible: showFilterChips,
+              child: const SizedBox(height: 16),
+            ),
 
             // List of places
             Expanded(
@@ -262,8 +290,6 @@ class _JelajahiPageState extends State<JelajahiPage> {
     );
   }
 }
-
-// ... (Kelas FilterChipWidget dan PlaceCard tetap sama)
 
 class FilterChipWidget extends StatelessWidget {
   final String label;
