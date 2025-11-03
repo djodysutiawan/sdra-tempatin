@@ -3,6 +3,7 @@ import 'pages/onboarding_page.dart';
 import 'pages/login_page.dart';
 import 'pages/register_page.dart';
 import 'pages/home_page.dart';
+import 'pages/mybooking_page.dart';
 
 void main() {
   runApp(const TempatinApp());
@@ -35,6 +36,7 @@ class TempatinApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
         '/home': (context) => const HomePage(),
+        '/mybooking': (context) => MyBookingPage(),
       },
     );
   }
