@@ -21,7 +21,9 @@ class JelajahiPage extends StatefulWidget {
 }
 
 class _JelajahiPageState extends State<JelajahiPage> {
+  // 1. Menambahkan variabel untuk menampung teks pencarian
   String selectedFilter = "All";
+  String searchText = ""; // Variabel baru untuk teks pencarian
 
   final List<Map<String, dynamic>> allPlaces = [
     {
@@ -125,20 +127,41 @@ class _JelajahiPageState extends State<JelajahiPage> {
     },
   ];
 
+  // 3. Gabungkan filter dan pencarian
   List<Map<String, dynamic>> get filteredPlaces {
+    // Terapkan filter berdasarkan selectedFilter
+    List<Map<String, dynamic>> places;
+
     switch (selectedFilter) {
       case "Harga":
-        return List.from(allPlaces)
+        places = List.from(allPlaces)
           ..sort((a, b) => a['price'].compareTo(b['price']));
+        break;
       case "Lokasi":
-        return allPlaces
+        places = allPlaces
             .where((place) => place['location'] == 'Tasikmalaya')
             .toList();
+        break;
       case "Discount":
-        return allPlaces.where((place) => place['discount'] == true).toList();
+        places = allPlaces.where((place) => place['discount'] == true).toList();
+        break;
       default:
-        return allPlaces;
+        places = allPlaces;
+        break;
     }
+
+    // Terapkan filter pencarian jika searchText tidak kosong
+    if (searchText.isNotEmpty) {
+      final query = searchText.toLowerCase();
+      places = places.where((place) {
+        // Cari di 'name' atau 'location'
+        final name = place['name'].toLowerCase();
+        final location = place['location'].toLowerCase();
+        return name.contains(query) || location.contains(query);
+      }).toList();
+    }
+
+    return places;
   }
 
   @override
@@ -178,19 +201,25 @@ class _JelajahiPageState extends State<JelajahiPage> {
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Row(
+              child: Row(
                 children: [
-                  Icon(Icons.search, color: Colors.grey),
-                  SizedBox(width: 8),
+                  const Icon(Icons.search, color: Colors.grey),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
-                      decoration: InputDecoration(
+                      // 2. Hubungkan TextField ke variabel searchText
+                      onChanged: (value) {
+                        setState(() {
+                          searchText = value;
+                        });
+                      },
+                      decoration: const InputDecoration(
                         hintText: 'Search...',
                         border: InputBorder.none,
                       ),
                     ),
                   ),
-                  Icon(Icons.tune, color: Colors.grey),
+                  const Icon(Icons.tune, color: Colors.grey),
                 ],
               ),
             ),
@@ -233,6 +262,8 @@ class _JelajahiPageState extends State<JelajahiPage> {
     );
   }
 }
+
+// ... (Kelas FilterChipWidget dan PlaceCard tetap sama)
 
 class FilterChipWidget extends StatelessWidget {
   final String label;
