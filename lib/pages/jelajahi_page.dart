@@ -14,7 +14,7 @@ class TempatinApp extends StatelessWidget {
 }
 
 class JelajahiPage extends StatefulWidget {
-  const JelajahiPage({super.key}); 
+  const JelajahiPage({super.key});
 
   @override
   State<JelajahiPage> createState() => _JelajahiPageState();
