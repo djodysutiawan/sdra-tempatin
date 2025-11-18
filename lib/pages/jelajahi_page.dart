@@ -25,6 +25,7 @@ class _JelajahiPageState extends State<JelajahiPage> {
   String searchText = "";
   bool showFilterChips = true;
 
+  // ... (data allPlaces tetap sama)
   final List<Map<String, dynamic>> allPlaces = [
     {
       'name': 'Golden Cafe',
@@ -60,7 +61,7 @@ class _JelajahiPageState extends State<JelajahiPage> {
       'price': 90,
       'discount': true,
       'image':
-          'https://images.unsplash.com/photo-1567880905822-56f8e06fe630?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=735',
+          'https://images.unsplash.com/photo-1567880905822-56f8e06fe630?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format=fit=crop&q=80&w=735',
     },
     {
       'name': 'Kopi Kenangan',
@@ -69,7 +70,61 @@ class _JelajahiPageState extends State<JelajahiPage> {
       'price': 12,
       'discount': true,
       'image':
-          'https://images.unsplash.com/photo-1511081692775-05d0f180a065?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=686',
+          'https://images.unsplash.com/photo-1511081692775-05d0f180a065?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format=fit=crop&q=80&w=686',
+    },
+    {
+      'name': 'Sunset Resto',
+      'location': 'Bandung',
+      'details': 'Restoran rooftop dengan pemandangan matahari terbenam.',
+      'price': 80,
+      'discount': true,
+      'image':
+          'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1171',
+    },
+    {
+      'name': 'WungPick Space',
+      'location': 'Ciamis',
+      'details': 'Ruang kerja bersama berkapasitas 20 orang, free Wi-Fi & AC.',
+      'price': 60,
+      'discount': false,
+      'image':
+          'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800',
+    },
+    {
+      'name': 'Urban CoWork',
+      'location': 'Bandung',
+      'details': 'Coworking modern dengan meeting room & coffee bar.',
+      'price': 70,
+      'discount': true,
+      'image':
+          'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800',
+    },
+    {
+      'name': 'Green Leaf Cafe',
+      'location': 'Tasikmalaya',
+      'details': 'Tempat hijau dengan taman mini dan area outdoor nyaman.',
+      'price': 40,
+      'discount': false,
+      'image':
+          'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=800',
+    },
+    {
+      'name': 'Resto Harmoni',
+      'location': 'Garut',
+      'details': 'Menyajikan masakan nusantara dengan interior elegan.',
+      'price': 90,
+      'discount': true,
+      'image':
+          'https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=800',
+    },
+    {
+      'name': 'Sunda Space',
+      'location': 'Tasikmalaya',
+      'details': 'Tempat ngopi santai dengan sentuhan tradisional Sunda.',
+      'price': 45,
+      'discount': false,
+      'image':
+          'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=800',
     },
   ];
 
@@ -121,19 +176,10 @@ class _JelajahiPageState extends State<JelajahiPage> {
             fontSize: 18,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black),
-          onPressed: () {},
-        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none, color: Colors.black),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const NotificationPage()),
-              );
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -179,6 +225,8 @@ class _JelajahiPageState extends State<JelajahiPage> {
               ),
             ),
             const SizedBox(height: 12),
+
+            // Filter buttons (dibungkus Visibility)
             Visibility(
               visible: showFilterChips,
               child: SingleChildScrollView(
@@ -194,6 +242,8 @@ class _JelajahiPageState extends State<JelajahiPage> {
                           onTap: () {
                             setState(() {
                               selectedFilter = label;
+                              // Reset pencarian setelah mengganti filter (opsional)
+                              // searchText = "";
                             });
                           },
                         ),
@@ -211,6 +261,7 @@ class _JelajahiPageState extends State<JelajahiPage> {
                 itemCount: filteredPlaces.length,
                 itemBuilder: (context, index) {
                   final place = filteredPlaces[index];
+                  // PlaceCard sekarang menampilkan data
                   return PlaceCard(place: place);
                 },
               ),
@@ -256,69 +307,124 @@ class FilterChipWidget extends StatelessWidget {
   }
 }
 
+// --- PERUBAHAN PADA PlaceCard ---
 class PlaceCard extends StatelessWidget {
   final Map<String, dynamic> place;
   const PlaceCard({super.key, required this.place});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: Image.network(
-              place['image'],
-              height: 160,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+    // 1. Bungkus Card dengan GestureDetector
+    return GestureDetector(
+      onTap: () {
+        // 2. Aksi saat di-klik: Pindah halaman
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            // 3. Panggil DetailPage dan kirim data 'place'
+            builder: (context) => DetailPage(place: place),
           ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  place['name'],
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
+        );
+      },
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
+              child: Image.network(
+                place['image'],
+                height: 160,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    place['name'],
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
                   ),
-                ),
-                Text(
-                  place['location'],
-                  style: const TextStyle(color: Colors.grey),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  place['details'],
-                  style: const TextStyle(color: Colors.grey),
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '\$${place['price']}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.teal,
+                  Text(
+                    place['location'],
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    place['details'],
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '\$${place['price']}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                        ),
                       ),
-                    ),
-                    const Text(
-                      'Per Hour',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ],
+                      const Text(
+                        'Per Hour',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// --- KELAS BARU UNTUK HALAMAN DETAIL ---
+// (Ini adalah kerangka/placeholder sederhana)
+
+class DetailPage extends StatelessWidget {
+  // 1. Terima data 'place'
+  final Map<String, dynamic> place;
+
+  const DetailPage({super.key, required this.place});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        // 2. Tampilkan nama kafe di AppBar
+        title: Text(place['name']),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black, // Agar tombol kembali terlihat
+        elevation: 0,
+      ),
+      body: Center(
+        // 3. Tampilkan data yang dikirim
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Detail untuk ${place['name']}',
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Text('Lokasi: ${place['location']}'),
+            const SizedBox(height: 10),
+            Text('Harga: \$${place['price']}'),
+          ],
+        ),
       ),
     );
   }
