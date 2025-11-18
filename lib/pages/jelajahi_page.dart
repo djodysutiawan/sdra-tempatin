@@ -22,7 +22,7 @@ class JelajahiPage extends StatefulWidget {
 
 class _JelajahiPageState extends State<JelajahiPage> {
   String selectedFilter = "All";
-  String searchText = ""; // <-- Variabel untuk Teks Pencarian
+  String searchText = "";
   bool showFilterChips = true;
 
   final List<Map<String, dynamic>> allPlaces = [
@@ -71,64 +71,9 @@ class _JelajahiPageState extends State<JelajahiPage> {
       'image':
           'https://images.unsplash.com/photo-1511081692775-05d0f180a065?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=686',
     },
-    {
-      'name': 'Sunset Resto',
-      'location': 'Bandung',
-      'details': 'Restoran rooftop dengan pemandangan matahari terbenam.',
-      'price': 80,
-      'discount': true,
-      'image':
-          'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1171',
-    },
-    {
-      'name': 'WungPick Space',
-      'location': 'Ciamis',
-      'details': 'Ruang kerja bersama berkapasitas 20 orang, free Wi-Fi & AC.',
-      'price': 60,
-      'discount': false,
-      'image':
-          'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800',
-    },
-    {
-      'name': 'Urban CoWork',
-      'location': 'Bandung',
-      'details': 'Coworking modern dengan meeting room & coffee bar.',
-      'price': 70,
-      'discount': true,
-      'image':
-          'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800',
-    },
-    {
-      'name': 'Green Leaf Cafe',
-      'location': 'Tasikmalaya',
-      'details': 'Tempat hijau dengan taman mini dan area outdoor nyaman.',
-      'price': 40,
-      'discount': false,
-      'image':
-          'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=800',
-    },
-    {
-      'name': 'Resto Harmoni',
-      'location': 'Garut',
-      'details': 'Menyajikan masakan nusantara dengan interior elegan.',
-      'price': 90,
-      'discount': true,
-      'image':
-          'https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=800',
-    },
-    {
-      'name': 'Sunda Space',
-      'location': 'Tasikmalaya',
-      'details': 'Tempat ngopi santai dengan sentuhan tradisional Sunda.',
-      'price': 45,
-      'discount': false,
-      'image':
-          'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=800',
-    },
   ];
 
   List<Map<String, dynamic>> get filteredPlaces {
-    // 1. Terapkan Filter Chips (Harga, Lokasi, Discount)
     List<Map<String, dynamic>> places;
 
     switch (selectedFilter) {
@@ -149,11 +94,9 @@ class _JelajahiPageState extends State<JelajahiPage> {
         break;
     }
 
-    // 2. Terapkan Pencarian Teks
     if (searchText.isNotEmpty) {
       final query = searchText.toLowerCase();
       places = places.where((place) {
-        // Mencari di nama atau lokasi (case-insensitive)
         final name = place['name'].toLowerCase();
         final location = place['location'].toLowerCase();
         return name.contains(query) || location.contains(query);
@@ -185,7 +128,12 @@ class _JelajahiPageState extends State<JelajahiPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none, color: Colors.black),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const NotificationPage()),
+              );
+            },
           ),
         ],
       ),
@@ -193,7 +141,6 @@ class _JelajahiPageState extends State<JelajahiPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Search bar
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
@@ -206,7 +153,6 @@ class _JelajahiPageState extends State<JelajahiPage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
-                      // Mengaktifkan fungsi pencarian
                       onChanged: (value) {
                         setState(() {
                           searchText = value;
@@ -218,16 +164,13 @@ class _JelajahiPageState extends State<JelajahiPage> {
                       ),
                     ),
                   ),
-                  // Mengaktifkan tombol filter (Icons.tune)
                   IconButton(
                     icon: Icon(
                       Icons.tune,
-                      // Mengubah warna ikon berdasarkan status visibilitas filter chips
                       color: showFilterChips ? Colors.teal : Colors.grey,
                     ),
                     onPressed: () {
                       setState(() {
-                        // Toggle visibilitas filter chips
                         showFilterChips = !showFilterChips;
                       });
                     },
@@ -236,10 +179,8 @@ class _JelajahiPageState extends State<JelajahiPage> {
               ),
             ),
             const SizedBox(height: 12),
-
-            // Filter buttons (dibungkus Visibility)
             Visibility(
-              visible: showFilterChips, // Dikontrol oleh tombol tune
+              visible: showFilterChips,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -253,8 +194,6 @@ class _JelajahiPageState extends State<JelajahiPage> {
                           onTap: () {
                             setState(() {
                               selectedFilter = label;
-                              // Reset pencarian setelah mengganti filter (opsional)
-                              // searchText = "";
                             });
                           },
                         ),
@@ -263,14 +202,10 @@ class _JelajahiPageState extends State<JelajahiPage> {
                 ),
               ),
             ),
-
-            // SizedBox hanya ditampilkan jika filter chips terlihat
             Visibility(
               visible: showFilterChips,
               child: const SizedBox(height: 16),
             ),
-
-            // List of places
             Expanded(
               child: ListView.builder(
                 itemCount: filteredPlaces.length,
@@ -384,6 +319,38 @@ class PlaceCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+//
+// ==========================
+//     HALAMAN NOTIFIKASI
+// ==========================
+//
+
+class NotificationPage extends StatelessWidget {
+  const NotificationPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          "Notifikasi",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        foregroundColor: Colors.black,
+      ),
+      body: const Center(
+        child: Text(
+          "Belum ada notifikasi untuk saat ini.",
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
       ),
     );
   }
